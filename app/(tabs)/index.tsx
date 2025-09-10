@@ -1,30 +1,28 @@
-import { api } from "@/convex/_generated/api";
+import { createHomeStyles } from "@/assets/styles/home.styles";
+import Header from "@/componenets/Header";
+import TodoInput from "@/componenets/TodoInput";
 import useTheme from "@/hooks/useTheme";
-import { useMutation, useQuery } from "convex/react";
-import { Text, TouchableOpacity, View } from "react-native";
+import { LinearGradient } from "expo-linear-gradient";
+import { StatusBar, Text, TouchableOpacity } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function Index() {
-  const { toggleDarkMode } = useTheme();
-  const todos = useQuery(api.todos.getTodos);
-  const clearAllTodos = useMutation(api.todos.clearAllTodos);
-  return (
-    <View
-      style={{
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-      }}
-    >
-      <TouchableOpacity onPress={toggleDarkMode}>
-        <Text>toggle the mode</Text>
-        {todos?.map((t) => (
-          <Text>{t.text}</Text>
-        ))}
-      </TouchableOpacity>
+  const { toggleDarkMode, colors } = useTheme();
 
-      <TouchableOpacity onPress={() => clearAllTodos()}>
-        <Text>Clear All Todos</Text>
-      </TouchableOpacity>
-    </View>
+  const homeStyles = createHomeStyles(colors);
+  return (
+    <LinearGradient
+      colors={colors.gradients.background}
+      style={homeStyles.container}
+    >
+      <StatusBar barStyle={colors.statusBarStyle} />
+      <SafeAreaView style={homeStyles.safeArea}>
+        <Header />
+        <TodoInput />
+        <TouchableOpacity onPress={toggleDarkMode}>
+          <Text>toggle the mode</Text>
+        </TouchableOpacity>
+      </SafeAreaView>
+    </LinearGradient>
   );
 }

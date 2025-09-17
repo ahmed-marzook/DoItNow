@@ -12,7 +12,7 @@ export const createSettingsStyles = (colors: ColorScheme) => {
     },
     header: {
       paddingHorizontal: 24,
-      paddingVertical: 32,
+      paddingVertical: 35,
       paddingBottom: 24,
     },
     titleContainer: {

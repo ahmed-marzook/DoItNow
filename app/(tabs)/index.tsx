@@ -6,10 +6,14 @@ import TodoInput from "@/componenets/TodoInput";
 import { api } from "@/convex/_generated/api";
 import { Doc, Id } from "@/convex/_generated/dataModel";
 import useTheme from "@/hooks/useTheme";
+import {
+  getOfflineTodos,
+  initializeOfflineDatabase,
+} from "@/storage/offlineDatabase";
 import { Ionicons } from "@expo/vector-icons";
 import { useMutation, useQuery } from "convex/react";
 import { LinearGradient } from "expo-linear-gradient";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Alert,
   FlatList,
@@ -24,6 +28,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 type Todo = Doc<"todos">;
 
 export default function Index() {
+  // ✅ All hooks at the top, before any conditional logic
   const { toggleDarkMode, colors } = useTheme();
   const [editingId, setEditingId] = useState<Id<"todos"> | null>(null);
   const [editText, setEditText] = useState("");
@@ -35,6 +40,15 @@ export default function Index() {
   const deleteTodo = useMutation(api.todos.deleteTodo);
   const updateTodo = useMutation(api.todos.updateTodo);
 
+  // ✅ useEffect moved before conditional return
+  useEffect(() => {
+    initializeOfflineDatabase().then(async () => {
+      const todos = await getOfflineTodos();
+      console.log(todos);
+    });
+  }, []);
+
+  // ✅ Conditional logic after all hooks
   const isLoading = todos === undefined;
 
   if (isLoading) return <LoadingSpinner />;
